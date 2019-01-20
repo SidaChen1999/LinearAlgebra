@@ -1,12 +1,12 @@
 
 /*
- *	@breif main class
+ *	@brief main class
  *	@author StarChen  
  */
 public class LinearAlgebra 
 {
 	/*
-	*	@breif empty constructor
+	*	@brief empty constructor
 	*/
 	public LinearAlgebra() 
 	{
@@ -15,7 +15,7 @@ public class LinearAlgebra
 
 
 	/*
-	*	@breif main function use for debugging.
+	*	@brief main function use for debugging.
 	*/
 	public static void main(String[] args) {
 		int counter = 0;
@@ -34,105 +34,105 @@ public class LinearAlgebra
 				b[i][j] = counter;
 				counter += 0.5;
 			}
-
-			}
 		int [][] c = {{0, 2, 3, 4},
 					  {0, 4, 5, 6}};
+		
 		printMatrix(c);
 		//printMatrix(c);
 		//printMatrix(b);
-		//System.out.println(a[2-1][3-1]);
 		printMatrix(RREF(c));
 		//printMatrix(replacement(c, 1, 2, -1.5));
 		
 	}
 
 	/*
-	*	@breif translate orginal matrix into RREF 
+	*	@brief translate original matrix into RREF 
 	*/
     public static double[][] RREF (int[][] original)
     {
 		if (original == null)
 			return null;
-        else
-        {
-			double[][] rref = null;
-			double[][] elementary = null;
-			toDouble(original);
-			int m = original.length,
-				n = original[0].length;
-			rref = new double[m][n+m];
-			elementary = new double[n][n];
-			//add an elementary matrix at the end of this matrix
-            for (int i = 0; i < m; i++)
-                for (int j = 0; j < m + n; j++)
-					if (j < n)
-						rref[i][j] = original[i][j];
-                    else
-						if (i == (j - n))
-							rref[i][j]  = 1;
-						else
-							rref[i][j] = 0;
-			//forward operation to make it REF
-			int numOfPivotColumns = 0;
-			//int register = 0;
-			for (int i = 0; i < n; i++){
-				for (int j = i; j < m; j++){
-					if (j == i){ //first row scaling
-						if (rref[j][i] == 0){ //deal with first column 0 condition
-							int temp = 0;
-							for(int k = j; k < m; k++){
-								if(rref[k][i] != 0){
-									temp = k;
-									break;
-								}
-							}
-							if(temp == 0){
-								//register--;
+        
+		double[][] rref = null;
+		double[][] elementary = null;
+		toDouble(original);
+		int m = original.length,
+			n = original[0].length;
+		rref = new double[m][n+m];
+		elementary = new double[n][n];
+		//add an elementary matrix at the end of this matrix
+           for (int i = 0; i < m; i++)
+               for (int j = 0; j < m + n; j++)
+				if (j < n)
+					rref[i][j] = original[i][j];
+                   else
+					if (i == (j - n))
+						rref[i][j]  = 1;
+					else
+						rref[i][j] = 0;
+		//forward operation to make it REF
+		int numOfPivotColumns = 0;
+		//int register = 0;
+		for (int i = 0; i < n; i++){
+			for (int j = i; j < m; j++){
+				if (j == i){ //first row scaling
+					if (rref[j][i] == 0){ //deal with first column 0 condition
+						int temp = 0;
+						for(int k = j; k < m; k++){
+							if(rref[k][i] != 0){
+								temp = k;
 								break;
 							}
-							else{ //move the first element 0 row to the back
-								interchange(rref, j, temp);
-								scaling(rref, j, 1 / rref[j][i]);
-							}
 						}
-						else
+						if(temp == 0){
+							//register--;
+							break;
+						}
+						else{ //move the first element 0 row to the back
+							interchange(rref, j, temp);
 							scaling(rref, j, 1 / rref[j][i]);
+						}
 					}
-					else //other rows replacement
-						replacement(rref, i, j, -rref[j][i]);
-					//register++;
-				}
-			}
-			//backward operation to make it RREF
-            for (int i = m - 1; i > -1; i--)
-                for (int j = m - 1 - i; j > -1; j--)
-                {
-					if (rref[j][i] == 1)
-						continue;
 					else
-						replacement(rref, i, j, -rref[j][i]);
+						scaling(rref, j, 1 / rref[j][i]);
 				}
-			return rref;
+				else //other rows replacement
+					replacement(rref, i, j, -rref[j][i]);
+				//register++;
+			}
 		}
+		//backward operation to make it RREF
+           for (int i = m - 1; i > -1; i--)
+               for (int j = m - 1 - i; j > -1; j--)
+               {
+				if (rref[j][i] == 1)
+					continue;
+				else
+					replacement(rref, i, j, -rref[j][i]);
+			}
+		return rref;
 	}
 	
 	/*
-	*	@breif repalcement operation
+	*	@brief replacement operation
 	*	add k*row1 to row2
 	*/
 	public static double[][] replacement (double[][] input, int row1, int row2, double k){
+		if (input == null)
+			return null;
 		for (int i = 0; i < input[0].length; i++){
 			input[row2][i] += input[row1][i] * k;
 		}
 		return input;
 	}
 	/*
-	*	@breif interchange operation
+	*	@brief interchange operation
 	*	interchange row1 and row2
 	*/
     public static double[][] interchange (double[][] input, int row1, int row2)
     {
+    	if (input == null)
+			return null;
 		double temp = 0;
 		for (int i = 0; i < input[0].length; i++){
 			temp = input[row1][i];
@@ -143,14 +143,17 @@ public class LinearAlgebra
 	}
 	
 	public static double[][] scaling (double[][] input, int row, double k){
+		if (input == null)
+			return null;
 		for (int i = 0; i < input[0].length; i++){
 			input[row][i] *= k;
 		}
 		return input;
 	}
 	
-    public static int[][] dotProduct(int [][] firstMatrix, int [][] secondMatrix)
-    {
+    public static int[][] dotProduct(int [][] firstMatrix, int [][] secondMatrix){
+    	if (firstMatrix == null || secondMatrix == null)
+			return null;
 		int m = firstMatrix.length, 
 			n = firstMatrix[0].length, 
 			p = secondMatrix.length, 
@@ -172,8 +175,9 @@ public class LinearAlgebra
 		return dotProduct;
 	}
 	
-    public static double[][] dotProduct (double [][] firstMatrix, double [][] secondMatrix)
-    {
+    public static double[][] dotProduct (double [][] firstMatrix, double [][] secondMatrix){
+    	if (firstMatrix == null || secondMatrix == null)
+			return null;
 		int m = firstMatrix.length, 
 			n = firstMatrix[0].length, 
 			p = secondMatrix.length, 
@@ -243,7 +247,7 @@ public class LinearAlgebra
             for ( int i = 0 ; i < print.length ; i++ ) 
             { 
 				for ( int j = 0 ; j < print[0].length ; j++ ) 
-					System.out.print(print[i][j] + "\t"); 
+					System.out.printf("%d\t", print[i][j]); 
 				System.out.print("\n"); 
 			}
 		}
