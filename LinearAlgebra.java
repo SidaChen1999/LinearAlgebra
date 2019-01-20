@@ -13,12 +13,12 @@ public class LinearAlgebra
 		// TODO Auto-generated constructor stub
 	}
 
+
 	/*
 	*	@breif main function use for debugging.
 	*/
-	public static void main(String[] args) 
-	{
-		int counter = 3;
+	public static void main(String[] args) {
+		int counter = 0;
 		int [][] a = new int [2][4];
 		double [][] b = new double [4][5];
 		for ( int i = 0 ; i < a.length ; i++ ) 
@@ -34,16 +34,16 @@ public class LinearAlgebra
 				b[i][j] = counter;
 				counter += 0.5;
 			}
-		double [][] c = {{1, 2, 3},
-					  {3, 4, 5}};
-		printMatrix(a);
+
+			}
+		int [][] c = {{0, 2, 3, 4},
+					  {0, 4, 5, 6}};
+		printMatrix(c);
 		//printMatrix(c);
 		//printMatrix(b);
 		//System.out.println(a[2-1][3-1]);
-		printMatrix(RREF(a));
-		printMatrix(replacement(c, 1, 2, -1.5));
-		//printMatrix(transpose(dotProduct(toDouble(a), (b))));
-		
+		printMatrix(RREF(c));
+		//printMatrix(replacement(c, 1, 2, -1.5));
 		
 	}
 
@@ -74,24 +74,44 @@ public class LinearAlgebra
 						else
 							rref[i][j] = 0;
 			//forward operation to make it REF
-            for (int i = 0; i < n; i++)
-                for (int j = i; j < m; j++)
-                    if (j == i)
-                        for (int k = m + n - 1; k > i - 1; k--)
-							rref[j][k] /= rref[j][i];
-                    else
-                        for (int k = m + n - 1; k > i - 1; k--)
-							rref[j][k] -= rref[j][i] *	
-					rref[i][k];
+			int numOfPivotColumns = 0;
+			//int register = 0;
+			for (int i = 0; i < n; i++){
+				for (int j = i; j < m; j++){
+					if (j == i){ //first row scaling
+						if (rref[j][i] == 0){ //deal with first column 0 condition
+							int temp = 0;
+							for(int k = j; k < m; k++){
+								if(rref[k][i] != 0){
+									temp = k;
+									break;
+								}
+							}
+							if(temp == 0){
+								//register--;
+								break;
+							}
+							else{ //move the first element 0 row to the back
+								interchange(rref, j, temp);
+								scaling(rref, j, 1 / rref[j][i]);
+							}
+						}
+						else
+							scaling(rref, j, 1 / rref[j][i]);
+					}
+					else //other rows replacement
+						replacement(rref, i, j, -rref[j][i]);
+					//register++;
+				}
+			}
 			//backward operation to make it RREF
             for (int i = m - 1; i > -1; i--)
                 for (int j = m - 1 - i; j > -1; j--)
                 {
 					if (rref[j][i] == 1)
 						continue;
-					for (int k = m + n - 1; k > i - 1; k--)
-						rref[j][k] -= rref[j][i] *	
-				rref[i][k];
+					else
+						replacement(rref, i, j, -rref[j][i]);
 				}
 			return rref;
 		}
@@ -101,11 +121,10 @@ public class LinearAlgebra
 	*	@breif repalcement operation
 	*	add k*row1 to row2
 	*/
-    public static double[][] replacement (double[][] input, int row1, int row2, double k)
-    {
-        for (int i = 0; i < input[0].length; i++)
-			input[row2 - 1][i] += input[row1 - 1][i] *	
-	k;
+	public static double[][] replacement (double[][] input, int row1, int row2, double k){
+		for (int i = 0; i < input[0].length; i++){
+			input[row2][i] += input[row1][i] * k;
+		}
 		return input;
 	}
 	/*
@@ -115,21 +134,18 @@ public class LinearAlgebra
     public static double[][] interchange (double[][] input, int row1, int row2)
     {
 		double temp = 0;
-        for (int i = 0; i < input[0].length; i++)
-        {
-			temp = input[row1 -1][i];
-			input[row1 - 1][i] = input[row2 - 1][i];
-			input[row2 - 1][i] = temp;
+		for (int i = 0; i < input[0].length; i++){
+			temp = input[row1][i];
+			input[row1][i] = input[row2][i];
+			input[row2][i] = temp;
 		}
 		return input;
 	}
-	/*
-	*	@breif scaling operation
-	*/
-    public static double[][] scaling (double[][] input, int row, double k)
-    {
-        for (int i = 0; i < input[0].length; i++)
-			input[row - 1][i] *= k;
+	
+	public static double[][] scaling (double[][] input, int row, double k){
+		for (int i = 0; i < input[0].length; i++){
+			input[row][i] *= k;
+		}
 		return input;
 	}
 	
